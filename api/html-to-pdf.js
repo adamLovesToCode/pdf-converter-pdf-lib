@@ -30,9 +30,15 @@ module.exports = async (req, res) => {
     try {
       const html = fs.readFileSync(file.filepath, "utf-8");
 
+      //   const browser = await puppeteer.launch({
+      //     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      //   });
+
       const browser = await puppeteer.launch({
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        headless: "new", // <- Wichtig bei neueren Puppeteer-Versionen
       });
+
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: "networkidle0" });
 
