@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "formidable": "^3.5.0",
-    "puppeteer": "^19.11.1"
+    "pdf-lib": "^1.17.1"
   }
 }
