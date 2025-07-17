@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "formidable": "^3.5.0",
-    "puppeteer": "^24.14.0"
+    "puppeteer": "^19.11.1"
   }
 }
