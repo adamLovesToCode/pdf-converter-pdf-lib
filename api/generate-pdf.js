@@ -12,42 +12,46 @@ export default async function handler(req, res) {
   const margin = 50;
   let y = height - margin;
 
-  // Verkäuferdaten (Logo optional)
-  page.drawText(data.seller.company, {
-    x: margin,
-    y,
-    size: 16,
-    font: fontBold,
-  });
+  // LINKS: Verkäuferdaten
+  page.drawText("Aurelius Shirts", { x: margin, y, size: 16, font: fontBold });
   y -= 15;
-  page.drawText(data.seller.address, { x: margin, y, size: 10, font });
+  page.drawText("Hertzstr. 57", { x: margin, y, size: 10, font });
   y -= 12;
-  page.drawText(data.seller.email, { x: margin, y, size: 10, font });
-  y -= 30;
+  page.drawText("13158 Berlin", { x: margin, y, size: 10, font });
+  y -= 12;
+  page.drawText("adam.konopka@aurelius-shirts.com", {
+    x: margin,
+    y,
+    size: 10,
+    font,
+  });
 
-  // Rechnungstitel & Metadaten
+  // RECHTS: Rechnungsdetails
+  let yRight = height - margin;
+  const rightX = width - margin - 200;
   page.drawText(`Rechnung Nr.: ${data.invoiceNumber}`, {
-    x: margin,
-    y,
-    size: 12,
-    font: fontBold,
-  });
-  y -= 15;
-  page.drawText(`Bestelldatum: ${data.orderDate.substring(0, 10)}`, {
-    x: margin,
-    y,
+    x: rightX,
+    y: yRight,
     size: 11,
     font,
   });
+  yRight -= 14;
+  page.drawText(`Bestelldatum: ${data.orderDate?.substring(0, 10)}`, {
+    x: rightX,
+    y: yRight,
+    size: 11,
+    font,
+  });
+  yRight -= 14;
   page.drawText(`Bezahlt am: ${data.datePaid?.substring(0, 10) || "-"}`, {
-    x: margin + 200,
-    y,
+    x: rightX,
+    y: yRight,
     size: 11,
     font,
   });
-  y -= 30;
 
-  // Kundendaten
+  // KUNDENDATEN
+  y -= 60;
   page.drawText("Rechnung an:", { x: margin, y, size: 12, font: fontBold });
   y -= 15;
   page.drawText(data.customerName, { x: margin, y, size: 11, font });
@@ -55,22 +59,31 @@ export default async function handler(req, res) {
   page.drawText(data.billingAddress, { x: margin, y, size: 11, font });
   y -= 15;
   page.drawText(data.customerEmail, { x: margin, y, size: 11, font });
-  y -= 30;
 
-  // Tabellenkopf
+  // ZAHLUNGSMETHODE
+  y -= 30;
+  page.drawText(`Zahlungsmethode: ${data.paymentMethod}`, {
+    x: width - margin - 200,
+    y,
+    size: 11,
+    font,
+  });
+  y -= 20;
+
+  // TABELLENKOPF
   page.drawText("Produkt", { x: margin, y, size: 11, font: fontBold });
-  page.drawText("Menge", { x: 250, y, size: 11, font: fontBold });
-  page.drawText("Einzelpreis", { x: 320, y, size: 11, font: fontBold });
+  page.drawText("Menge", { x: 230, y, size: 11, font: fontBold });
+  page.drawText("Einzelpreis", { x: 300, y, size: 11, font: fontBold });
   page.drawText("MwSt.", { x: 400, y, size: 11, font: fontBold });
   page.drawText("Gesamt", { x: 480, y, size: 11, font: fontBold });
-  y -= 15;
+  y -= 14;
 
-  // Produkte
+  // PRODUKTE
   data.products.forEach((p) => {
     page.drawText(p.name, { x: margin, y, size: 11, font });
-    page.drawText(String(p.quantity), { x: 250, y, size: 11, font });
+    page.drawText(String(p.quantity), { x: 230, y, size: 11, font });
     page.drawText(`${p.unitPriceGross} ${data.currencySymbol}`, {
-      x: 320,
+      x: 300,
       y,
       size: 11,
       font,
@@ -85,7 +98,8 @@ export default async function handler(req, res) {
     y -= 15;
   });
 
-  y -= 20;
+  // TRENNLINIE
+  y -= 10;
   page.drawLine({
     start: { x: margin, y },
     end: { x: width - margin, y },
@@ -94,7 +108,7 @@ export default async function handler(req, res) {
   });
   y -= 20;
 
-  // Summen
+  // VERSAND + GESAMT
   page.drawText("Versandkosten:", { x: 400, y, size: 11, font });
   page.drawText(`${data.shippingTotal} ${data.currencySymbol}`, {
     x: 480,
@@ -113,48 +127,46 @@ export default async function handler(req, res) {
   });
   y -= 30;
 
-  // Zahlungsdetails
-  page.drawText(`Zahlungsmethode: ${data.paymentMethod}`, {
-    x: margin,
-    y,
-    size: 11,
-    font,
-  });
-  y -= 15;
-  page.drawText(`Transaktions-ID: ${data.transactionId}`, {
-    x: margin,
-    y,
-    size: 10,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
-  });
-  y -= 30;
-
-  // Hinweis auf §19 UStG
-  if (data.isSmallBusinessRegulation && data.seller.vatNotice) {
-    page.drawText(data.seller.vatNotice, {
+  // KLEINUNTERNEHMER-HINWEIS
+  page.drawText(
+    "Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.",
+    {
       x: margin,
       y,
       size: 10,
       font,
       color: rgb(0.4, 0.4, 0.4),
-    });
-    y -= 20;
-  }
+    }
+  );
 
-  // Footer
-  page.drawText(data.seller.company, {
-    x: margin,
-    y: 60,
-    size: 9,
+  // FOOTER
+  const footerY = 60;
+  page.drawText(
+    "Adam Konopka\nHertzstr. 57\n13158 Berlin\ntel. +49 176 123123123\nadam.konopka@aurelius-shirts.com",
+    {
+      x: margin,
+      y: footerY,
+      size: 8,
+      font,
+      lineHeight: 10,
+      color: rgb(0.5, 0.5, 0.5),
+    }
+  );
+
+  page.drawText("USt-ID: DE123456789", {
+    x: width / 2 - 40,
+    y: footerY + 20,
+    size: 8,
     font,
     color: rgb(0.5, 0.5, 0.5),
   });
-  page.drawText("Danke für deinen Einkauf!", {
-    x: margin,
-    y: 45,
-    size: 10,
+
+  page.drawText("Dies ist ein automatisch erstelltes PDF.", {
+    x: width - margin - 160,
+    y: footerY + 20,
+    size: 8,
     font,
+    color: rgb(0.5, 0.5, 0.5),
   });
 
   const pdfBytes = await pdfDoc.save();
