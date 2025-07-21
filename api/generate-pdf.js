@@ -29,6 +29,9 @@ export default async function handler(req, res) {
   // RECHTS: Rechnungsdetails
   let yRight = height - margin;
   const rightX = width - margin - 200;
+  page.drawText("Rechnung", { x: rightX, yRight, size: 16, font: fontBold });
+  y -= 15;
+  yRight -= 18;
   page.drawText(`Rechnung Nr.: ${data.invoiceNumber}`, {
     x: rightX,
     y: yRight,
@@ -111,7 +114,7 @@ export default async function handler(req, res) {
   // VERSAND + GESAMT
   page.drawText("Versandkosten:", { x: 400, y, size: 11, font });
   page.drawText(`${data.shippingTotal} ${data.currencySymbol}`, {
-    x: 480,
+    x: 490,
     y,
     size: 11,
     font,
@@ -120,7 +123,7 @@ export default async function handler(req, res) {
 
   page.drawText("Gesamtbetrag:", { x: 400, y, size: 12, font: fontBold });
   page.drawText(`${data.orderTotal} ${data.currencySymbol}`, {
-    x: 480,
+    x: 490,
     y,
     size: 12,
     font: fontBold,
@@ -155,7 +158,7 @@ export default async function handler(req, res) {
 
   page.drawText("USt-ID: DE123456789", {
     x: width / 2 - 40,
-    y: footerY + 20,
+    y: footerY,
     size: 8,
     font,
     color: rgb(0.5, 0.5, 0.5),
@@ -163,7 +166,7 @@ export default async function handler(req, res) {
 
   page.drawText("Dies ist ein automatisch erstelltes PDF.", {
     x: width - margin - 160,
-    y: footerY + 20,
+    y: footerY,
     size: 8,
     font,
     color: rgb(0.5, 0.5, 0.5),
