@@ -29,9 +29,9 @@ export default async function handler(req, res) {
   // RECHTS: Rechnungsdetails
   let yRight = height - margin;
   const rightX = width - margin - 200;
-  page.drawText("Rechnung", { x: rightX, yRight, size: 16, font: fontBold });
+  page.drawText("Rechnung", { x: rightX, y: yRight, size: 16, font: fontBold });
   y -= 15;
-  yRight -= 18;
+  yRight -= 15;
   page.drawText(`Rechnung Nr.: ${data.invoiceNumber}`, {
     x: rightX,
     y: yRight,
